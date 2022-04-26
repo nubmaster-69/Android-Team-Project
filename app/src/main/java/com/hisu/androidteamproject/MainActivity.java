@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(frmContainer.getId(), fragment)
-                .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left)
                 .commit();
     }
 }
