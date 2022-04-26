@@ -1,22 +1,34 @@
 package com.hisu.androidteamproject;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.widget.FrameLayout;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
 public class MainActivity extends AppCompatActivity {
+
+    private FrameLayout frmContainer;
+
+    public FrameLayout getFrmContainer() {
+        return frmContainer;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FrameLayout frmContainer = findViewById(R.id.frmFragmentContainer);
+        frmContainer = findViewById(R.id.frmFragmentContainer);
 
+        setFragment(new LoginFragment());
+    }
+
+    public void setFragment(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(frmContainer.getId(), new LoginFragment())
+                .replace(frmContainer.getId(), fragment)
+                .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left)
                 .commit();
     }
 }

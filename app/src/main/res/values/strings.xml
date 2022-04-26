@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">Android Team Project</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_name">Moment Sharing</string>
+    <string-array name="gender">
+        <item>Nam</item>
+        <item>Nữ</item>
+    </string-array>
 </resources>
