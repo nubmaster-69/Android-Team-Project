@@ -155,6 +155,10 @@
                 android:background="@android:color/transparent"
                 android:entries="@array/gender"
                 android:paddingStart="25dp"
+                android:spinnerMode="dropdown"
+                android:dropDownWidth="match_parent"
+                android:clipToPadding="true"
+                android:dropDownVerticalOffset="50dp"
                 android:textAlignment="textStart" />
 
             <ImageView
