@@ -7,6 +7,8 @@ import android.widget.FrameLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.hisu.androidteamproject.fragment.LoginFragment;
+
 public class MainActivity extends AppCompatActivity {
 
     private FrameLayout frmContainer;

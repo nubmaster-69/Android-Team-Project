@@ -1,4 +1,4 @@
-package com.hisu.androidteamproject;
+package com.hisu.androidteamproject.entity;
 
 public class Post {
 
