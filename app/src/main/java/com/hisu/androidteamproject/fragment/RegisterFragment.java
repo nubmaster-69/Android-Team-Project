@@ -149,6 +149,7 @@ public class RegisterFragment extends Fragment {
                                         .addOnSuccessListener(documentReference -> {
                                             dia.dismiss();
                                             showAlert("Đăng ký thành công!");
+                                            clearAllText();
                                         })
                                         .addOnFailureListener(e -> showAlert(e.getMessage()));
                             })
@@ -204,11 +205,11 @@ public class RegisterFragment extends Fragment {
         new AlertDialog.Builder(getContext())
                 .setIcon(R.drawable.ic_alert)
                 .setTitle("Something went wrong!")
-                .setMessage(msg).setPositiveButton("OK", (v, i) -> onConfirmDialog())
+                .setMessage(msg).setPositiveButton("OK", null)
                 .show();
     }
 
-    private void onConfirmDialog() {
+    private void clearAllText() {
         edtUsername.setText("");
         edtEmail.setText("");
         edtAddress.setText("");
