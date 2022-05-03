@@ -1,9 +1,12 @@
 package com.hisu.androidteamproject.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -15,9 +18,16 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.hisu.androidteamproject.MainActivity;
 import com.hisu.androidteamproject.R;
 import com.hisu.androidteamproject.entity.User;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 public class LoginFragment extends Fragment {
 
@@ -25,6 +35,9 @@ public class LoginFragment extends Fragment {
     private TextView txtRegisterNow;
     private EditText edtEmail, edtPwd;
     private Button btnLogin;
+
+    private FirebaseAuth firebaseAuth;
+    private FirebaseFirestore fireStore;
 
     private boolean isToggleShowPwd = false;
 
@@ -48,6 +61,8 @@ public class LoginFragment extends Fragment {
     }
 
     private void initFragmentUI(View loginView) {
+        firebaseAuth = FirebaseAuth.getInstance();
+        fireStore = FirebaseFirestore.getInstance();
         containerActivity = (MainActivity) getActivity();
         txtRegisterNow = loginView.findViewById(R.id.txvRegisterNow);
         edtEmail = loginView.findViewById(R.id.edtEmail);
@@ -125,13 +140,33 @@ public class LoginFragment extends Fragment {
     }
 
     private void loginWithFirebase(String email, String password) {
-        //Todo: Viết code đăng nhập với firebase tại đây
-        //      hiện tại chỉ là demo
-        if (email.equals("harry_nguyen@gmail.com") && password.equals("123456"))
-            containerActivity.setFragment(new NewFeedFragment(
-                    new User("Harry", R.drawable.ic_male, "Nam", email, "Xì ròn")
-            ));
-        else
-            showError("Email hoặc mật khẩu không đúng!", edtEmail);
+
+//      Deprecated but still good :v Customize layout if u want to
+        ProgressDialog dia = new ProgressDialog(getContext());
+        dia.setMessage("Logging in! Please wait...");
+        dia.show();
+
+        firebaseAuth.signInWithEmailAndPassword(email, password)
+                .addOnSuccessListener(authResult -> {
+                    fireStore.collection("Users")
+                            .whereEqualTo("email", email).get()
+                            .addOnSuccessListener(queryDocumentSnapshots -> {
+                                dia.dismiss();
+                                containerActivity.setFragment(new NewFeedFragment(
+                                        queryDocumentSnapshots.getDocuments().get(0)
+                                                .toObject(User.class)));
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    dia.dismiss();
+                    showAlert(e.getMessage());
+                });
+    }
+
+    private void  showAlert(String msg) {
+        new AlertDialog.Builder(getContext())
+                .setIcon(R.drawable.ic_alert)
+                .setTitle("Something went wrong!")
+                .setMessage(msg).setPositiveButton("OK", null).show();
     }
 }

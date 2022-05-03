@@ -178,7 +178,7 @@
             android:layout_marginTop="15dp"
             android:background="@drawable/register_button_bgr"
             android:fontFamily="@font/be_vietnam"
-            android:text="Đăng nhập"
+            android:text="Đăng ký"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="21sp"

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "843687503859",
+    "project_id": "momentsharingdb",
+    "storage_bucket": "momentsharingdb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:843687503859:android:c7493a8e190b70c4c39486",
+        "android_client_info": {
+          "package_name": "com.hisu.androidteamproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "843687503859-8ebqd4o293i81lcrmvru3phn9kn5u705.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtKijrlQ0DlfPdJCMbA85MkU-v2JQhtfE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "843687503859-8ebqd4o293i81lcrmvru3phn9kn5u705.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

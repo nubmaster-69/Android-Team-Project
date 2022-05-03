@@ -1,5 +1,6 @@
 package com.hisu.androidteamproject.fragment;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,11 +11,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.hisu.androidteamproject.R;
 import com.hisu.androidteamproject.adapter.PostAdapter;
 import com.hisu.androidteamproject.entity.Post;
 import com.hisu.androidteamproject.entity.User;
 
+import java.net.URI;
 import java.util.List;
 
 public class NewFeedFragment extends Fragment {
@@ -51,7 +54,9 @@ public class NewFeedFragment extends Fragment {
     }
 
     private void initFragmentData(User user) {
-        imgUserAvatar.setImageResource(user.getAvatar());
+//        imgUserAvatar.setImageURI(Uri.parse(user.getAvatar()));
+        Glide.with(imgUserAvatar)
+                .load(user.getAvatar()).into(imgUserAvatar);
         initPostRecyclerView();
     }
 

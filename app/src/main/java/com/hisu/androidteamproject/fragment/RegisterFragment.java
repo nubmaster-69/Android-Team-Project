@@ -1,6 +1,10 @@
 package com.hisu.androidteamproject.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
@@ -14,12 +18,30 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.SignInMethodQueryResult;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.hisu.androidteamproject.MainActivity;
 import com.hisu.androidteamproject.R;
+import com.hisu.androidteamproject.entity.Post;
 import com.hisu.androidteamproject.entity.User;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class RegisterFragment extends Fragment {
 
@@ -31,8 +53,8 @@ public class RegisterFragment extends Fragment {
     private Button btnRegister;
     private boolean isToggleShowPwd = false;
 
-//    Todo: này chỉ để test, nhớ xoá nhe
-    private User user;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseFirestore fireStore;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,7 +81,11 @@ public class RegisterFragment extends Fragment {
     }
 
     private void initFragmentUI(View registerView) {
+        firebaseAuth = FirebaseAuth.getInstance();
+        fireStore = FirebaseFirestore.getInstance();
+
         containerActivity = (MainActivity) getActivity();
+
         edtUsername = registerView.findViewById(R.id.edt_regis_username);
         edtEmail = registerView.findViewById(R.id.edt_regis_email);
         edtPwd = registerView.findViewById(R.id.edt_regis_pwd);
@@ -104,21 +130,36 @@ public class RegisterFragment extends Fragment {
             String password, String address, String gender
     ) {
         if (preValidate(username, email, password, address)) {
-            int avatar = gender.equalsIgnoreCase("nam")
-                    ? R.drawable.ic_male : R.drawable.ic_female;
 
-            user = new User(username, avatar, gender, email, address);
+            ProgressDialog dia = new ProgressDialog(getContext());
+            dia.setMessage("We're working on it! Please wait...");
+            dia.show();
 
-            Log.e(
-                    RegisterFragment.class.getName(),
-                    user.getUsername() + " - " + user.getGender()
-            );
-
-            //Todo: lưu user vào room sau đó lưu lên fire-store, update code sau :)
-            registerWithFirebase(email, password);
+            firebaseAuth.fetchSignInMethodsForEmail(email).addOnSuccessListener(result -> {
+                if (!result.getSignInMethods().isEmpty()) {
+                    dia.dismiss();
+                    showAlert("Email này đã được dùng để đăng ký tài khoản trước đó!" +
+                            " Vui lòng kiểm tra lại!");
+                    edtEmail.requestFocus();
+                } else {
+                    firebaseAuth.createUserWithEmailAndPassword(email, password)
+                            .addOnSuccessListener(authResult -> {
+                                User user = new User(username, gender, email, address);
+                                fireStore.collection("Users").add(user)
+                                        .addOnSuccessListener(documentReference -> {
+                                            dia.dismiss();
+                                            showAlert("Đăng ký thành công!");
+                                        })
+                                        .addOnFailureListener(e -> showAlert(e.getMessage()));
+                            })
+                            .addOnFailureListener(e -> {
+                                dia.dismiss();
+                                showAlert(e.getMessage());
+                            });
+                }
+            });
         }
     }
-
 
     private boolean preValidate(String username, String email, String password, String address) {
         if (TextUtils.isEmpty(username)) {
@@ -159,9 +200,18 @@ public class RegisterFragment extends Fragment {
         field.requestFocus();
     }
 
-    private void registerWithFirebase(String email, String password) {
-        //Todo: Viết code xử lý lưu user lên firebase và room ở đây hoặc tách ra :D
-        // hiện tại chỉ là demo
-        containerActivity.setFragment(new NewFeedFragment(user));
+    private void showAlert(String msg) {
+        new AlertDialog.Builder(getContext())
+                .setIcon(R.drawable.ic_alert)
+                .setTitle("Something went wrong!")
+                .setMessage(msg).setPositiveButton("OK", (v, i) -> onConfirmDialog())
+                .show();
+    }
+
+    private void onConfirmDialog() {
+        edtUsername.setText("");
+        edtEmail.setText("");
+        edtAddress.setText("");
+        edtPwd.setText("");
     }
 }
