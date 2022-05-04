@@ -6,7 +6,6 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -18,16 +17,11 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.hisu.androidteamproject.MainActivity;
 import com.hisu.androidteamproject.R;
 import com.hisu.androidteamproject.entity.User;
-
-import java.util.concurrent.atomic.AtomicReference;
 
 public class LoginFragment extends Fragment {
 
@@ -83,15 +77,19 @@ public class LoginFragment extends Fragment {
         edtPwd.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 //0 -> drawable_left, 1 -> drawable_top, 2 -> drawable_right, 3 -> drawable_bottom
-                if (event.getRawX() >= (edtPwd.getRight() - edtPwd.getCompoundDrawables()[2].getBounds().width()) - 20) {
-
+                if (event.getRawX() >=
+                        (edtPwd.getRight() -
+                                edtPwd.getCompoundDrawables()[2].getBounds().width()) - 20
+                ) {
                     isToggleShowPwd = !isToggleShowPwd;
 
                     if (isToggleShowPwd) {
-                        edtPwd.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_lock, 0, R.drawable.ic_eye_close, 0);
+                        edtPwd.setCompoundDrawablesWithIntrinsicBounds(
+                                R.drawable.icon_lock, 0, R.drawable.ic_eye_close, 0);
                         edtPwd.setTransformationMethod(null);
                     } else {
-                        edtPwd.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_lock, 0, R.drawable.icon_open_eye, 0);
+                        edtPwd.setCompoundDrawablesWithIntrinsicBounds(
+                                R.drawable.icon_lock, 0, R.drawable.icon_open_eye, 0);
                         edtPwd.setTransformationMethod(new PasswordTransformationMethod());
                     }
                     return true;
@@ -106,15 +104,6 @@ public class LoginFragment extends Fragment {
             loginWithFirebase(email, password);
     }
 
-    /**
-     * Phương thức có chức năng kiểm tra dữ liệu trước của 2 editText trước khi
-     * thực hiện việc authentication với firebase
-     *
-     * @param email:    email người dùng
-     * @param password: mật khẩu người dùng
-     * @return boolean
-     * @author Harry
-     */
     private boolean preValidate(String email, String password) {
         if (TextUtils.isEmpty(email)) {
             showError("Vui lòng điền gmail để đăng nhập!", edtEmail);
@@ -150,11 +139,9 @@ public class LoginFragment extends Fragment {
                 .addOnSuccessListener(authResult -> {
                     fireStore.collection("Users")
                             .whereEqualTo("email", email).get()
-                            .addOnSuccessListener(queryDocumentSnapshots -> {
+                            .addOnSuccessListener(snapshots -> {
                                 dia.dismiss();
-                                containerActivity.setFragment(new NewFeedFragment(
-                                        queryDocumentSnapshots.getDocuments().get(0)
-                                                .toObject(User.class)));
+                                goToNewFeed(snapshots.getDocuments().get(0).toObject(User.class));
                             });
                 })
                 .addOnFailureListener(e -> {
@@ -163,7 +150,16 @@ public class LoginFragment extends Fragment {
                 });
     }
 
-    private void  showAlert(String msg) {
+    private void goToNewFeed(User user) {
+        containerActivity.getSupportFragmentManager()
+                .beginTransaction()
+                .replace(containerActivity.getFrmContainer().getId(),
+                        new NewFeedFragment(user))
+                .addToBackStack("new_feed")
+                .commit();
+    }
+
+    private void showAlert(String msg) {
         new AlertDialog.Builder(getContext())
                 .setIcon(R.drawable.ic_alert)
                 .setTitle("Something went wrong!")

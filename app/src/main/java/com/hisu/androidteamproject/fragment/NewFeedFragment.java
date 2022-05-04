@@ -2,6 +2,7 @@ package com.hisu.androidteamproject.fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +13,26 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.common.reflect.TypeToken;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.hisu.androidteamproject.R;
 import com.hisu.androidteamproject.adapter.PostAdapter;
 import com.hisu.androidteamproject.entity.Post;
 import com.hisu.androidteamproject.entity.User;
 
+import java.lang.reflect.Type;
 import java.net.URI;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class NewFeedFragment extends Fragment {
@@ -27,6 +42,8 @@ public class NewFeedFragment extends Fragment {
     private RecyclerView postRecyclerView;
     private PostAdapter postAdapter;
     private ImageView imgUserAvatar;
+
+    private FirebaseFirestore fireStore;
 
     public NewFeedFragment(User user) {
         Bundle bundle = new Bundle();
@@ -49,30 +66,31 @@ public class NewFeedFragment extends Fragment {
     }
 
     private void initFragmentUI(View newFeedsView) {
+        fireStore = FirebaseFirestore.getInstance();
         postRecyclerView = newFeedsView.findViewById(R.id.post_recycler_view);
         imgUserAvatar = newFeedsView.findViewById(R.id.user_profile_avatar);
     }
 
     private void initFragmentData(User user) {
-//        imgUserAvatar.setImageURI(Uri.parse(user.getAvatar()));
         Glide.with(imgUserAvatar)
                 .load(user.getAvatar()).into(imgUserAvatar);
-        initPostRecyclerView();
+        initPostRecyclerView(user.getEmail());
     }
 
-    private void initPostRecyclerView() {
-        postAdapter = new PostAdapter(getPosts(), getActivity());
+    private void initPostRecyclerView(String email) {
+        postAdapter = new PostAdapter(getActivity());
         postRecyclerView.setAdapter(postAdapter);
         postRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-    }
+        fireStore.collection("Posts").get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<Post> postList = new ArrayList<>();
 
-    //    Todo: Update code để load post từ firebase hoặc roomdb
-    private List<Post> getPosts() {
-        return List.of(
-                new Post(323, R.drawable.demo_bg, "Trời xanh mây trắng\n" +
-                        "Em say nắng chứ không say anh"),
-                new Post(232, R.drawable.demo_bg, "Những lời đàm tiếu qua loa linh tinh\n" +
-                        "Không thể làm khó được Xúc xích sô dum 100% từ thịt")
-        );
+                    for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
+                        Post post = snapshot.toObject(Post.class);
+                        postList.add(post);
+                    }
+
+                    postAdapter.setPostList(postList);
+                });
     }
 }

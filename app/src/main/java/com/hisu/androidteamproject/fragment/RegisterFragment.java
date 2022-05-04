@@ -107,15 +107,20 @@ public class RegisterFragment extends Fragment {
     private void toggleShowPassword() {
         edtPwd.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_UP) {
-                if (event.getRawX() >= (edtPwd.getRight() - edtPwd.getCompoundDrawables()[2].getBounds().width()) - 20) {
-
+                //0 -> drawable_left, 1 -> drawable_top, 2 -> drawable_right, 3 -> drawable_bottom
+                if (event.getRawX() >=
+                        (edtPwd.getRight() -
+                                edtPwd.getCompoundDrawables()[2].getBounds().width()) - 20
+                ) {
                     isToggleShowPwd = !isToggleShowPwd;
 
                     if (isToggleShowPwd) {
-                        edtPwd.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_lock, 0, R.drawable.ic_eye_close, 0);
+                        edtPwd.setCompoundDrawablesWithIntrinsicBounds(
+                                R.drawable.icon_lock, 0, R.drawable.ic_eye_close, 0);
                         edtPwd.setTransformationMethod(null);
                     } else {
-                        edtPwd.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_lock, 0, R.drawable.icon_open_eye, 0);
+                        edtPwd.setCompoundDrawablesWithIntrinsicBounds(
+                                R.drawable.icon_lock, 0, R.drawable.icon_open_eye, 0);
                         edtPwd.setTransformationMethod(new PasswordTransformationMethod());
                     }
                     return true;
