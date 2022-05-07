@@ -15,6 +15,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.hisu.androidteamproject.MainActivity;
 import com.hisu.androidteamproject.R;
 import com.hisu.androidteamproject.adapter.PostAdapter;
 import com.hisu.androidteamproject.entity.Post;
@@ -33,6 +34,7 @@ public class NewFeedFragment extends Fragment {
 
     private FirebaseFirestore fireStore;
     private CollectionReference postCollection;
+    private MainActivity containerActivity;
 
     public NewFeedFragment(User user) {
         Bundle bundle = new Bundle();
@@ -51,6 +53,8 @@ public class NewFeedFragment extends Fragment {
         User user = (User) getArguments().get(USER_KEY);
         initFragmentData(user);
 
+        imgUserAvatar.setOnClickListener(view -> switchToProfileScreen());
+
         return newFeedsView;
     }
 
@@ -58,6 +62,7 @@ public class NewFeedFragment extends Fragment {
         fireStore = FirebaseFirestore.getInstance();
         postRecyclerView = newFeedsView.findViewById(R.id.post_recycler_view);
         imgUserAvatar = newFeedsView.findViewById(R.id.user_profile_avatar);
+        containerActivity = (MainActivity) getActivity();
     }
 
     private void initFragmentData(User user) {
@@ -85,5 +90,14 @@ public class NewFeedFragment extends Fragment {
                 postList.add(document.toObject(Post.class));
             postAdapter.setPostList(postList);
         });
+    }
+
+    private void switchToProfileScreen() {
+        containerActivity.getSupportFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left)
+                .replace(containerActivity.getFrmContainer().getId(), new ProfileFragment())
+                .addToBackStack("user_profile")
+                .commit();
     }
 }
