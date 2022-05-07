@@ -44,9 +44,6 @@ public class LoginFragment extends Fragment {
 
         txtRegisterNow.setOnClickListener(view -> switchToRegisterScreen());
 
-        edtEmail.setText("harrytest@gmail.com");
-        edtPwd.setText("123456");
-
         btnLogin.setOnClickListener(view -> login(
                 edtEmail.getText().toString().trim(),
                 edtPwd.getText().toString().trim()
