@@ -1,8 +1,6 @@
 package com.hisu.androidteamproject.fragment;
 
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,26 +11,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.common.reflect.TypeToken;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.hisu.androidteamproject.R;
 import com.hisu.androidteamproject.adapter.PostAdapter;
 import com.hisu.androidteamproject.entity.Post;
 import com.hisu.androidteamproject.entity.User;
 
-import java.lang.reflect.Type;
-import java.net.URI;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 public class NewFeedFragment extends Fragment {
@@ -44,6 +32,7 @@ public class NewFeedFragment extends Fragment {
     private ImageView imgUserAvatar;
 
     private FirebaseFirestore fireStore;
+    private CollectionReference postCollection;
 
     public NewFeedFragment(User user) {
         Bundle bundle = new Bundle();
@@ -74,23 +63,27 @@ public class NewFeedFragment extends Fragment {
     private void initFragmentData(User user) {
         Glide.with(imgUserAvatar)
                 .load(user.getAvatar()).into(imgUserAvatar);
-        initPostRecyclerView(user.getEmail());
+        initPostRecyclerView(user);
     }
 
-    private void initPostRecyclerView(String email) {
-        postAdapter = new PostAdapter(getActivity());
+    private void initPostRecyclerView(User user) {
+        postAdapter = new PostAdapter(getActivity(), user);
         postRecyclerView.setAdapter(postAdapter);
         postRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
         fireStore.collection("Posts").get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     List<Post> postList = new ArrayList<>();
-
-                    for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
-                        Post post = snapshot.toObject(Post.class);
-                        postList.add(post);
-                    }
-
+                    for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots)
+                        postList.add(snapshot.toObject(Post.class));
                     postAdapter.setPostList(postList);
                 });
+
+        fireStore.collection("Posts").addSnapshotListener((value, error) -> {
+            List<Post> postList = new ArrayList<>();
+            for (DocumentSnapshot document : value.getDocuments())
+                postList.add(document.toObject(Post.class));
+            postAdapter.setPostList(postList);
+        });
     }
 }

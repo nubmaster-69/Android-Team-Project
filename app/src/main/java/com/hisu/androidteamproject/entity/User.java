@@ -11,16 +11,9 @@ public class User implements Serializable {
     private String gender;
     private String email;
     private String address;
+    private List<String> likedPosts;
 
     public User() {
-    }
-
-    public User(String username, String avatar, String gender, String email, String address) {
-        this.username = username;
-        this.avatar = avatar;
-        this.gender = gender;
-        this.email = email;
-        this.address = address;
     }
 
     public User(String username, String gender, String email, String address) {
@@ -29,6 +22,22 @@ public class User implements Serializable {
         this.email = email;
         this.address = address;
         setDefaultAvatar();
+    }
+
+    public User(String username, String gender, String email, String address, List<String> likedPosts) {
+        this.username = username;
+        this.gender = gender;
+        this.email = email;
+        this.address = address;
+        this.likedPosts = likedPosts;
+    }
+
+    public List<String> getLikedPosts() {
+        return likedPosts;
+    }
+
+    public void setLikedPosts(List<String> likedPosts) {
+        this.likedPosts = likedPosts;
     }
 
     public String getUsername() {

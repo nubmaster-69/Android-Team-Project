@@ -20,6 +20,8 @@
             android:layout_height="50dp"
             android:layout_marginTop="8dp"
             android:src="@drawable/ic_female"
+            app:civ_border_width="1dp"
+            app:civ_border_color="#073b4c"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -29,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:fontFamily="@font/be_vietnam_bold"
-            android:text="Trần Đức Bo"
+
             android:textColor="@color/black"
             android:textSize="16dp"
             android:textStyle="bold"
@@ -44,9 +46,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:fontFamily="@font/be_vietnam"
-            android:text="Rò vắp"
+
             app:layout_constraintBottom_toBottomOf="@+id/post_user_img"
-            app:layout_constraintEnd_toEndOf="@+id/user_name"
+            app:layout_constraintEnd_toStartOf="@+id/guideline3"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/user_name"
             app:layout_constraintTop_toBottomOf="@+id/user_name"
@@ -60,8 +62,7 @@
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/user_address"
-            app:srcCompat="@drawable/demo_bg" />
+            app:layout_constraintTop_toBottomOf="@+id/user_address"/>
 
         <ImageView
             android:id="@+id/img_favorite"
@@ -87,7 +88,7 @@
             android:layout_marginEnd="296dp"
             android:fontFamily="@font/be_vietnam_bold"
             android:gravity="center_vertical"
-            android:text="696"
+
             android:textColor="@color/black"
             android:textSize="18dp"
             app:layout_constraintBottom_toBottomOf="@+id/img_favorite"
@@ -105,7 +106,6 @@
             android:ellipsize="end"
             android:fontFamily="@font/be_vietnam"
             android:maxLines="2"
-            android:text="Rừng vàng núi bạc không chịu ở\nLại sang bưng phở ở Cali"
             android:textColor="@color/black"
             android:textSize="18dp"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"

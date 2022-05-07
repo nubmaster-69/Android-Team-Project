@@ -37,11 +37,13 @@
 
         </androidx.appcompat.widget.SearchView>
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/user_profile_avatar"
             android:layout_width="50dp"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_male" />
+            android:src="@drawable/ic_male"
+            app:civ_border_width="1dp"
+            app:civ_border_color="#073b4c"/>
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

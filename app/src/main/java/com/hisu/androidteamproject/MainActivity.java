@@ -1,6 +1,7 @@
 package com.hisu.androidteamproject;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
@@ -8,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.hisu.androidteamproject.fragment.LoginFragment;
+
+import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 

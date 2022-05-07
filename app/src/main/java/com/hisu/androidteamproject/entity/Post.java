@@ -2,6 +2,8 @@ package com.hisu.androidteamproject.entity;
 
 import com.google.firebase.Timestamp;
 
+import java.util.UUID;
+
 public class Post {
 
     private String id;
@@ -9,19 +11,19 @@ public class Post {
     private String status;
     private int postReact;
     private String imageURL;
-    private boolean privacyPublic;
     private Timestamp postDate;
 
     public Post() {
     }
 
-    public Post(String id, String userID, String status, int postReact, String imageURL, boolean privacyPublic, Timestamp postDate) {
-        this.id = id;
+    public Post(
+            String userID, String status, int postReact, String imageURL, Timestamp postDate
+    ) {
+        this.id = UUID.randomUUID().toString();
         this.userID = userID;
         this.status = status;
         this.postReact = postReact;
         this.imageURL = imageURL;
-        this.privacyPublic = privacyPublic;
         this.postDate = postDate;
     }
 
@@ -63,14 +65,6 @@ public class Post {
 
     public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
-    }
-
-    public boolean isPrivacyPublic() {
-        return privacyPublic;
-    }
-
-    public void setPrivacyPublic(boolean privacyPublic) {
-        this.privacyPublic = privacyPublic;
     }
 
     public Timestamp getPostDate() {
