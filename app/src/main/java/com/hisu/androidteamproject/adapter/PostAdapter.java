@@ -1,7 +1,5 @@
 package com.hisu.androidteamproject.adapter;
 
-import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,48 +7,35 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.hisu.androidteamproject.R;
 import com.hisu.androidteamproject.entity.Post;
 import com.hisu.androidteamproject.entity.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
 
-    private final Context context;
     private List<Post> postList;
     private final User user;
+    private final FirebaseFirestore fireStore;
+    private String currentUserID = "";
+
+    public PostAdapter(User user) {
+        this.user = user;
+        fireStore = FirebaseFirestore.getInstance();
+    }
 
     public void setPostList(List<Post> postList) {
         this.postList = postList;
         notifyDataSetChanged();
-    }
-
-    public void add(Post post) {
-        if (postList == null)
-            return;
-
-        this.postList.add(post);
-        notifyDataSetChanged();
-    }
-
-    public PostAdapter(Context context, User user) {
-        this.context = context;
-        this.user = user;
     }
 
     @NonNull
@@ -65,12 +50,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public void onBindViewHolder(@NonNull PostAdapter.PostViewHolder holder, int position) {
         Post post = postList.get(position);
 
-        FirebaseFirestore.getInstance().collection("Users")
+        fireStore.collection("Users")
                 .whereEqualTo("email", user.getEmail()).get()
                 .addOnSuccessListener(snapshots -> {
 
-                    List<String> likedPosts = new ArrayList<>();
-                    likedPosts = snapshots.getDocuments().get(0).toObject(User.class).getLikedPosts();
+                    DocumentSnapshot snapshot = snapshots.getDocuments().get(0);
+
+                    currentUserID = snapshot.getId();
+                    List<String> likedPosts = snapshot.toObject(User.class).getLikedPosts();
 
                     if (likedPosts.contains(post.getId())) {
                         holder.isFavorite = true;
@@ -79,12 +66,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                         holder.isFavorite = false;
                         holder.postFavorite.setImageResource(R.drawable.ic_favorite);
                     }
-
-                    holder.setPostData(post, user);
                 });
 
+        fireStore.collection("Users").document(post.getUserID()).get()
+                .addOnSuccessListener(
+                        snapshot -> holder.setPostData(post, snapshot.toObject(User.class))
+                );
+
         holder.postFavorite.setOnClickListener(view -> {
-            holder.toggleReactToPost(post);
+            holder.toggleReactToPost(post, currentUserID);
         });
     }
 
@@ -115,7 +105,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         }
 
         private void setPostData(Post post, User user) {
-
             Glide.with(postImage)
                     .load(post.getImageURL()).into(postImage);
 
@@ -128,18 +117,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             txtUserAddress.setText(user.getAddress());
         }
 
-        private void toggleReactToPost(Post post) {
+        private void toggleReactToPost(Post post, String userID) {
             isFavorite = !isFavorite;
 
             if (!isFavorite) {
                 post.setPostReact(post.getPostReact() - 1);
-                userCollection.document(post.getUserID())
+                userCollection.document(userID)
                         .update("likedPosts", FieldValue.arrayRemove(post.getId()))
                         .addOnSuccessListener(unused1 -> {
                         });
             } else {
                 post.setPostReact(post.getPostReact() + 1);
-                userCollection.document(post.getUserID())
+                userCollection.document(userID)
                         .update("likedPosts", FieldValue.arrayUnion(post.getId()))
                         .addOnSuccessListener(unused2 -> {
                         });

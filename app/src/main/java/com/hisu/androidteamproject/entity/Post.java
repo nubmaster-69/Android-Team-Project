@@ -2,9 +2,10 @@ package com.hisu.androidteamproject.entity;
 
 import com.google.firebase.Timestamp;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class Post {
+public class Post implements Serializable {
 
     private String id;
     private String userID;

@@ -21,6 +21,8 @@ import com.hisu.androidteamproject.adapter.PostAdapter;
 import com.hisu.androidteamproject.entity.Post;
 import com.hisu.androidteamproject.entity.User;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +35,6 @@ public class NewFeedFragment extends Fragment {
     private ImageView imgUserAvatar;
 
     private FirebaseFirestore fireStore;
-    private CollectionReference postCollection;
     private MainActivity containerActivity;
 
     public NewFeedFragment(User user) {
@@ -53,7 +54,7 @@ public class NewFeedFragment extends Fragment {
         User user = (User) getArguments().get(USER_KEY);
         initFragmentData(user);
 
-        imgUserAvatar.setOnClickListener(view -> switchToProfileScreen());
+        imgUserAvatar.setOnClickListener(view -> switchToProfileScreen(user));
 
         return newFeedsView;
     }
@@ -72,31 +73,47 @@ public class NewFeedFragment extends Fragment {
     }
 
     private void initPostRecyclerView(User user) {
-        postAdapter = new PostAdapter(getActivity(), user);
+        postAdapter = new PostAdapter(user);
         postRecyclerView.setAdapter(postAdapter);
         postRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         fireStore.collection("Posts").get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     List<Post> postList = new ArrayList<>();
-                    for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots)
-                        postList.add(snapshot.toObject(Post.class));
+
+                    for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
+                        Post post = snapshot.toObject(Post.class);
+
+                        //Only load Posts which posted two days from now
+                        if(filterPostDate(post.getPostDate().toDate().toInstant()))
+                            postList.add(post);
+                    }
+
                     postAdapter.setPostList(postList);
                 });
 
         fireStore.collection("Posts").addSnapshotListener((value, error) -> {
             List<Post> postList = new ArrayList<>();
-            for (DocumentSnapshot document : value.getDocuments())
-                postList.add(document.toObject(Post.class));
+
+            for (DocumentSnapshot document : value.getDocuments()) {
+                Post post = document.toObject(Post.class);
+                if(filterPostDate(post.getPostDate().toDate().toInstant()))
+                    postList.add(post);
+            }
+
             postAdapter.setPostList(postList);
         });
     }
 
-    private void switchToProfileScreen() {
+    private boolean filterPostDate(Instant postedDate) {
+        return Math.abs(Duration.between(Instant.now(), postedDate).toDays()) < 3;
+    }
+
+    private void switchToProfileScreen(User user) {
         containerActivity.getSupportFragmentManager()
                 .beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left)
-                .replace(containerActivity.getFrmContainer().getId(), new ProfileFragment())
+                .replace(containerActivity.getFrmContainer().getId(), new ProfileFragment(user))
                 .addToBackStack("user_profile")
                 .commit();
     }
