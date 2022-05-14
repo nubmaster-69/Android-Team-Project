@@ -155,7 +155,7 @@ public class LoginFragment extends Fragment {
                 .beginTransaction()
                 .replace(containerActivity.getFrmContainer().getId(),
                         new NewFeedFragment(user))
-                .addToBackStack("new_feed")
+                .addToBackStack("new_feed_ui")
                 .commit();
     }
 

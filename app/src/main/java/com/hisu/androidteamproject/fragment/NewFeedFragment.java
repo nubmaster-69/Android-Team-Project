@@ -32,7 +32,7 @@ public class NewFeedFragment extends Fragment {
 
     private RecyclerView postRecyclerView;
     private PostAdapter postAdapter;
-    private ImageView imgUserAvatar;
+    private ImageView imgUserAvatar, logoImage;
 
     private FirebaseFirestore fireStore;
     private MainActivity containerActivity;
@@ -55,6 +55,7 @@ public class NewFeedFragment extends Fragment {
         initFragmentData(user);
 
         imgUserAvatar.setOnClickListener(view -> switchToProfileScreen(user));
+        logoImage.setOnClickListener(view -> containerActivity.signOut());
 
         return newFeedsView;
     }
@@ -63,6 +64,7 @@ public class NewFeedFragment extends Fragment {
         fireStore = FirebaseFirestore.getInstance();
         postRecyclerView = newFeedsView.findViewById(R.id.post_recycler_view);
         imgUserAvatar = newFeedsView.findViewById(R.id.user_profile_avatar);
+        logoImage = newFeedsView.findViewById(R.id.img_logo);
         containerActivity = (MainActivity) getActivity();
     }
 

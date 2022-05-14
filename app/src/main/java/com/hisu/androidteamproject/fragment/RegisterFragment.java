@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -96,8 +97,11 @@ public class RegisterFragment extends Fragment {
     }
 
     private void switchToLoginScreen() {
-        containerActivity.getSupportFragmentManager()
-                .beginTransaction()
+        FragmentManager manager = containerActivity.getSupportFragmentManager();
+
+        manager.popBackStack();
+
+        manager.beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right)
                 .replace(containerActivity.getFrmContainer().getId(), new LoginFragment())
                 .commit();

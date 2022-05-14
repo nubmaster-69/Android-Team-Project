@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/imageView5"
+            android:id="@+id/img_logo"
             android:layout_width="42dp"
             android:layout_height="wrap_content"
             android:src="@mipmap/app_logo" />
