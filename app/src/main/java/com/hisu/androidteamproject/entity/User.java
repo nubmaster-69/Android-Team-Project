@@ -1,16 +1,29 @@
 package com.hisu.androidteamproject.entity;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverter;
+import androidx.room.TypeConverters;
+
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+@Entity(tableName = "users")
 public class User implements Serializable {
 
+    @PrimaryKey
+    @NonNull
     private String username;
     private String avatar;
     private String gender;
     private String email;
     private String address;
+
+    @TypeConverters(UserLikedPostConverter.class)
     private List<String> likedPosts;
 
     public User() {

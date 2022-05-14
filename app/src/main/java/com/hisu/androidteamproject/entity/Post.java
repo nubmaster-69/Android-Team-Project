@@ -1,24 +1,33 @@
 package com.hisu.androidteamproject.entity;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
 import com.google.firebase.Timestamp;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.UUID;
 
+@Entity(tableName = "posts")
 public class Post implements Serializable {
-
+    @PrimaryKey
+    @NonNull
     private String id;
     private String userID;
     private String status;
     private int postReact;
     private String imageURL;
-    private Timestamp postDate;
+    @TypeConverters(TimeStampConverter.class)
+    private Date postDate;
 
     public Post() {
     }
 
     public Post(
-            String userID, String status, int postReact, String imageURL, Timestamp postDate
+            String userID, String status, int postReact, String imageURL, Date postDate
     ) {
         this.id = UUID.randomUUID().toString();
         this.userID = userID;
@@ -68,11 +77,11 @@ public class Post implements Serializable {
         this.imageURL = imageURL;
     }
 
-    public Timestamp getPostDate() {
+    public Date getPostDate() {
         return postDate;
     }
 
-    public void setPostDate(Timestamp postDate) {
+    public void setPostDate(Date postDate) {
         this.postDate = postDate;
     }
 }

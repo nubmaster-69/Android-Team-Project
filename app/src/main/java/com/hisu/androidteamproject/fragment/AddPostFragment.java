@@ -124,7 +124,7 @@ public class AddPostFragment extends Fragment {
                                 String userID = snapshots.getDocuments().get(0).getId();
 
                                 Post post = new Post(userID, edtStatus.getText().toString(),
-                                        0, task.getResult().toString(), Timestamp.now());
+                                        0, task.getResult().toString(), new Date());
 
                                 fireStore.collection("Posts").add(post)
                                         .addOnSuccessListener(documentReference -> {
