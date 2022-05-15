@@ -4,12 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    tools:context=".fragment.ProfileFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout3"
         android:layout_width="0dp"
-        android:layout_height="240dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/layout_border_bottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -29,8 +30,8 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_image"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:layout_marginTop="-50dp"
             android:src="@drawable/ic_female"
             app:civ_border_color="@color/white"
@@ -52,18 +53,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profile_image" />
 
-        <ImageButton
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/ibtnEditAva"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginTop="-22dp"
-            android:background="#FFFFFF"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_btn_edit_ava"
             app:layout_constraintEnd_toEndOf="@+id/profile_image"
             app:layout_constraintHorizontal_bias="0.492"
             app:layout_constraintStart_toStartOf="@+id/profile_image"
-            app:layout_constraintTop_toBottomOf="@+id/profile_image"
-            app:srcCompat="@drawable/ic_btn_edit_ava" />
-
+            app:layout_constraintTop_toBottomOf="@+id/profile_image" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
@@ -96,7 +96,7 @@
         android:id="@+id/txt_profile_email"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="0dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:text="nguyenvanphat@gmail.com"
@@ -114,7 +114,7 @@
         android:id="@+id/txt_profile_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="0dp"
         android:text="Thành phố Hồ Chí Minh"
         android:textColor="#000000"
         android:textSize="16sp"
@@ -130,7 +130,7 @@
         android:id="@+id/txt_profile_gender"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="0dp"
         android:text="XX"
         android:textColor="#000000"
         android:textSize="16sp"
@@ -142,17 +142,16 @@
         app:layout_constraintTop_toTopOf="@+id/textView9"
         app:layout_constraintVertical_bias="0.0" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/profile_post_recyclerview"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
+    <FrameLayout
+        android:id="@+id/frlUserPostsContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@android:color/transparent"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/guideline9"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/guideline6"
-        app:layout_constraintTop_toBottomOf="@+id/divider2"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintHeight_percent="0.45"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline6"
@@ -185,7 +184,7 @@
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:layout_marginTop="4dp"
-        android:background="?android:attr/listDivider"
+        android:background="#d2d4d6"
         app:layout_constraintEnd_toStartOf="@+id/guideline9"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline6"
@@ -195,60 +194,78 @@
         android:id="@+id/divider2"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:layout_marginTop="4dp"
         android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout4"
         app:layout_constraintEnd_toStartOf="@+id/guideline9"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/guideline6"
-        app:layout_constraintTop_toBottomOf="@+id/ibtnEditProfile" />
+        app:layout_constraintStart_toStartOf="@+id/guideline6" />
 
-    <Button
-        android:id="@+id/ibtnLogout"
-        android:layout_width="132dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="4dp"
-        android:backgroundTint="#D70F57"
-        android:drawableLeft="@drawable/p_ic_logout2"
-        android:fallbackLineSpacing="true"
-        android:paddingLeft="5dp"
-        android:paddingRight="24dp"
-        android:text="Đăng xuất"
-        android:textAllCaps="false"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="@+id/guideline6"
-        app:layout_constraintTop_toBottomOf="@+id/divider" />
 
-    <Button
-        android:id="@+id/ibtnEditProfile"
-        android:layout_width="132dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="4dp"
-        android:backgroundTint="#7C899C"
-        android:drawableLeft="@drawable/p_ic_pencil"
-        android:fallbackLineSpacing="true"
-        android:paddingLeft="5dp"
-        android:paddingRight="24dp"
-        android:text="Sửa hồ sơ"
-        android:textAllCaps="false"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toStartOf="@+id/ibtnAdd"
-        app:layout_constraintStart_toEndOf="@+id/ibtnLogout"
-        app:layout_constraintTop_toBottomOf="@+id/divider" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/divider"
+        tools:layout_editor_absoluteX="0dp">
 
-    <Button
-        android:id="@+id/ibtnAdd"
-        android:layout_width="120dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="4dp"
-        android:backgroundTint="#0B8DD7"
-        android:drawableLeft="@drawable/p_ic_btn_add"
-        android:fallbackLineSpacing="true"
-        android:paddingLeft="5dp"
-        android:paddingRight="20dp"
-        android:text="Bài đăng"
-        android:textAllCaps="false"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toStartOf="@+id/guideline9"
-        app:layout_constraintTop_toBottomOf="@+id/divider" />
+        <Button
+            android:id="@+id/ibtnLogout"
+            android:layout_width="0dp"
+            android:layout_height="53dp"
+            android:backgroundTint="#D70F57"
+            android:drawableLeft="@drawable/p_ic_logout2"
+            android:fallbackLineSpacing="true"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:text="Đăng xuất"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.32" />
+
+        <Button
+            android:id="@+id/ibtnEditProfile"
+            android:layout_width="0dp"
+            android:layout_height="53dp"
+            android:backgroundTint="#7C899C"
+            android:drawableLeft="@drawable/p_ic_pencil"
+            android:fallbackLineSpacing="true"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:text="Sửa hồ sơ"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/ibtnLogout"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.32" />
+
+        <Button
+            android:id="@+id/ibtnAdd"
+            android:layout_width="0dp"
+            android:layout_height="53dp"
+            android:backgroundTint="#0B8DD7"
+            android:drawableLeft="@drawable/p_ic_btn_add"
+            android:fallbackLineSpacing="true"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:text="Bài đăng"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.32" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
