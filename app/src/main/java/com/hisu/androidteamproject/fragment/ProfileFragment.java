@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,7 +26,8 @@ public class ProfileFragment extends Fragment {
     private ImageView profileImage;
     private TextView profileUsername, profileAddress, profileEmail, profileGender;
     private RecyclerView userPostRecyclerView;
-    private ImageButton btnNewPost;
+    private ImageButton btnEditAva;
+    private Button btnLogout, btnEditProfile, btnNewPost;
     private MainActivity containerActivity;
     private Uri newAvatarUri;
 
@@ -70,6 +72,9 @@ public class ProfileFragment extends Fragment {
         profileAddress = profileView.findViewById(R.id.txt_profile_address);
         profileEmail = profileView.findViewById(R.id.txt_profile_email);
         profileGender = profileView.findViewById(R.id.txt_profile_gender);
+        btnEditAva = profileView.findViewById(R.id.ibtnEditAva);
+        btnLogout = profileView.findViewById(R.id.ibtnLogout);
+        btnEditProfile = profileView.findViewById(R.id.ibtnEditProfile);
         btnNewPost = profileView.findViewById(R.id.ibtnAdd);
     }
 

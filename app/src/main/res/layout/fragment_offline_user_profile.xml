@@ -7,7 +7,7 @@
     android:background="@color/white">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout3"
+        android:id="@+id/constraintLayout3Offline"
         android:layout_width="0dp"
         android:layout_height="240dp"
         android:background="@drawable/layout_border_bottom"
@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/imageViewOffline"
             android:layout_width="0dp"
             android:layout_height="140dp"
             android:scaleType="centerCrop"
@@ -28,7 +28,7 @@
             app:srcCompat="@drawable/bg_profile" />
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/profile_image"
+            android:id="@+id/profile_image_Offline"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginTop="-50dp"
@@ -37,10 +37,10 @@
             app:civ_border_width="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView" />
+            app:layout_constraintTop_toBottomOf="@+id/imageViewOffline" />
 
         <TextView
-            android:id="@+id/profile_username"
+            android:id="@+id/profile_username_Offline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
@@ -50,24 +50,24 @@
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profile_image" />
+            app:layout_constraintTop_toBottomOf="@+id/profile_image_Offline" />
 
         <ImageButton
-            android:id="@+id/ibtnEditAva"
+            android:id="@+id/ibtnEditAvaOffline"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginTop="-22dp"
             android:background="#FFFFFF"
-            app:layout_constraintEnd_toEndOf="@+id/profile_image"
+            app:layout_constraintEnd_toEndOf="@+id/profile_image_Offline"
             app:layout_constraintHorizontal_bias="0.492"
-            app:layout_constraintStart_toStartOf="@+id/profile_image"
-            app:layout_constraintTop_toBottomOf="@+id/profile_image"
+            app:layout_constraintStart_toStartOf="@+id/profile_image_Offline"
+            app:layout_constraintTop_toBottomOf="@+id/profile_image_Offline"
             app:srcCompat="@drawable/ic_btn_edit_ava" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
-        android:id="@+id/textView9"
+        android:id="@+id/textView9Offline"
         android:layout_width="86dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
@@ -76,11 +76,11 @@
         android:text="Giới tính"
         android:textColor="@color/black"
         android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="@+id/guideline6"
-        app:layout_constraintTop_toBottomOf="@+id/textView10" />
+        app:layout_constraintStart_toStartOf="@+id/guideline6Offline"
+        app:layout_constraintTop_toBottomOf="@+id/textView10Offline" />
 
     <TextView
-        android:id="@+id/textView10"
+        android:id="@+id/textView10Offline"
         android:layout_width="132dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
@@ -89,11 +89,11 @@
         android:text="Liên lạc với tôi"
         android:textColor="#000000"
         android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="@+id/guideline6"
-        app:layout_constraintTop_toBottomOf="@+id/textView11" />
+        app:layout_constraintStart_toStartOf="@+id/guideline6Offline"
+        app:layout_constraintTop_toBottomOf="@+id/textView11Offline" />
 
     <TextView
-        android:id="@+id/txt_profile_email"
+        android:id="@+id/txt_profile_email_Offline"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
@@ -103,15 +103,15 @@
         android:textColor="#000000"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/textView10"
-        app:layout_constraintEnd_toStartOf="@+id/guideline9"
-        app:layout_constraintStart_toEndOf="@+id/textView10"
-        app:layout_constraintTop_toTopOf="@+id/textView10"
+        app:layout_constraintBottom_toBottomOf="@+id/textView10Offline"
+        app:layout_constraintEnd_toStartOf="@+id/guideline9Offline"
+        app:layout_constraintStart_toEndOf="@+id/textView10Offline"
+        app:layout_constraintTop_toTopOf="@+id/textView10Offline"
         app:layout_constraintVertical_bias="0.0" />
 
 
     <TextView
-        android:id="@+id/txt_profile_address"
+        android:id="@+id/txt_profile_address_Offline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
@@ -119,57 +119,45 @@
         android:textColor="#000000"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/textView11"
-        app:layout_constraintEnd_toStartOf="@+id/guideline9"
+        app:layout_constraintBottom_toBottomOf="@+id/textView11Offline"
+        app:layout_constraintEnd_toStartOf="@+id/guideline9Offline"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/textView11"
-        app:layout_constraintTop_toTopOf="@+id/textView11"
+        app:layout_constraintStart_toEndOf="@+id/textView11Offline"
+        app:layout_constraintTop_toTopOf="@+id/textView11Offline"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/txt_profile_gender"
+        android:id="@+id/txt_profile_gender_Offline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:text="XX"
+        android:text="XY"
         android:textColor="#000000"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/textView9"
-        app:layout_constraintEnd_toStartOf="@+id/guideline9"
+        app:layout_constraintBottom_toBottomOf="@+id/textView9Offline"
+        app:layout_constraintEnd_toStartOf="@+id/guideline9Offline"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/textView9"
-        app:layout_constraintTop_toTopOf="@+id/textView9"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/profile_post_recyclerview"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/guideline9"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/guideline6"
-        app:layout_constraintTop_toBottomOf="@+id/divider2"
+        app:layout_constraintStart_toEndOf="@+id/textView9Offline"
+        app:layout_constraintTop_toTopOf="@+id/textView9Offline"
         app:layout_constraintVertical_bias="0.0" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline6"
+        android:id="@+id/guideline6Offline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_begin="8dp" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline9"
+        android:id="@+id/guideline9Offline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_end="8dp" />
 
     <TextView
-        android:id="@+id/textView11"
+        android:id="@+id/textView11Offline"
         android:layout_width="124dp"
         android:layout_height="wrap_content"
         android:drawableLeft="@drawable/p_ic_location"
@@ -177,35 +165,35 @@
         android:text="Nơi ở hiện tại"
         android:textColor="#000000"
         android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="@+id/guideline6"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout3" />
+        app:layout_constraintStart_toStartOf="@+id/guideline6Offline"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout3Offline" />
 
     <View
-        android:id="@+id/divider"
+        android:id="@+id/dividerOffline"
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:layout_marginTop="4dp"
         android:background="?android:attr/listDivider"
-        app:layout_constraintEnd_toStartOf="@+id/guideline9"
+        app:layout_constraintEnd_toStartOf="@+id/guideline9Offline"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/guideline6"
-        app:layout_constraintTop_toBottomOf="@+id/textView9" />
+        app:layout_constraintStart_toStartOf="@+id/guideline6Offline"
+        app:layout_constraintTop_toBottomOf="@+id/textView9Offline" />
 
     <View
-        android:id="@+id/divider2"
+        android:id="@+id/divider2Offline"
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:layout_marginTop="4dp"
         android:background="?android:attr/listDivider"
-        app:layout_constraintEnd_toStartOf="@+id/guideline9"
+        app:layout_constraintEnd_toStartOf="@+id/guideline9Offline"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/guideline6"
-        app:layout_constraintTop_toBottomOf="@+id/ibtnEditProfile" />
+        app:layout_constraintStart_toStartOf="@+id/guideline6Offline"
+        app:layout_constraintTop_toBottomOf="@+id/ibtnEditProfileOffline" />
 
     <Button
-        android:id="@+id/ibtnLogout"
+        android:id="@+id/ibtnLogoutOffline"
         android:layout_width="132dp"
-        android:layout_height="48dp"
+        android:layout_height="42dp"
         android:layout_marginTop="4dp"
         android:backgroundTint="#D70F57"
         android:drawableLeft="@drawable/p_ic_logout2"
@@ -215,13 +203,13 @@
         android:text="Đăng xuất"
         android:textAllCaps="false"
         android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="@+id/guideline6"
-        app:layout_constraintTop_toBottomOf="@+id/divider" />
+        app:layout_constraintStart_toStartOf="@+id/guideline6Offline"
+        app:layout_constraintTop_toBottomOf="@+id/dividerOffline" />
 
     <Button
-        android:id="@+id/ibtnEditProfile"
+        android:id="@+id/ibtnEditProfileOffline"
         android:layout_width="132dp"
-        android:layout_height="48dp"
+        android:layout_height="42dp"
         android:layout_marginTop="4dp"
         android:backgroundTint="#7C899C"
         android:drawableLeft="@drawable/p_ic_pencil"
@@ -231,14 +219,14 @@
         android:text="Sửa hồ sơ"
         android:textAllCaps="false"
         android:textSize="12sp"
-        app:layout_constraintEnd_toStartOf="@+id/ibtnAdd"
-        app:layout_constraintStart_toEndOf="@+id/ibtnLogout"
-        app:layout_constraintTop_toBottomOf="@+id/divider" />
+        app:layout_constraintEnd_toStartOf="@+id/ibtnAddOffline"
+        app:layout_constraintStart_toEndOf="@+id/ibtnLogoutOffline"
+        app:layout_constraintTop_toBottomOf="@+id/dividerOffline" />
 
     <Button
-        android:id="@+id/ibtnAdd"
+        android:id="@+id/ibtnAddOffline"
         android:layout_width="120dp"
-        android:layout_height="48dp"
+        android:layout_height="42dp"
         android:layout_marginTop="4dp"
         android:backgroundTint="#0B8DD7"
         android:drawableLeft="@drawable/p_ic_btn_add"
@@ -248,7 +236,17 @@
         android:text="Bài đăng"
         android:textAllCaps="false"
         android:textSize="12sp"
-        app:layout_constraintEnd_toStartOf="@+id/guideline9"
-        app:layout_constraintTop_toBottomOf="@+id/divider" />
+        app:layout_constraintEnd_toStartOf="@+id/guideline9Offline"
+        app:layout_constraintTop_toBottomOf="@+id/dividerOffline" />
+
+    <ImageView
+        android:id="@+id/imageView2Offline"
+        android:layout_width="340dp"
+        android:layout_height="294dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline9Offline"
+        app:layout_constraintStart_toStartOf="@+id/guideline6Offline"
+        app:layout_constraintTop_toBottomOf="@+id/divider2Offline"
+        app:srcCompat="@drawable/no_wifi_connection" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
