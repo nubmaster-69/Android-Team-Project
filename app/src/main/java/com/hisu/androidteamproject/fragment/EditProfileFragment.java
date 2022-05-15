@@ -33,9 +33,9 @@ public class EditProfileFragment extends Fragment {
     public static final String EDIT_USER_KEY = "_user_edit_profile";
 
     private ImageView newAvatar;
-    private EditText edtNewAddress, edtNewEmail;
+    private EditText edtNewAddress;
     private Spinner spNewGender;
-    private TextView currentAddress, currentEmail, currentGender;
+    private TextView currentAddress, currentGender;
     private Button btnUpdate;
     private Uri newAvatarUri;
 
@@ -79,13 +79,8 @@ public class EditProfileFragment extends Fragment {
 
         btnUpdate.setOnClickListener(view -> {
             String newAddress = edtNewAddress.getText().toString().trim();
-
-            if (preValidate(newAddress)) {
-
-                newAddress = TextUtils.isEmpty(newAddress) ? user.getAddress() : newAddress;
-
-                updateProfile(user, newAddress);
-            }
+            newAddress = TextUtils.isEmpty(newAddress) ? user.getAddress() : newAddress;
+            updateProfile(user, newAddress);
         });
 
         return editProfileView;
@@ -109,15 +104,7 @@ public class EditProfileFragment extends Fragment {
         Glide.with(newAvatar).load(user.getAvatar()).into(newAvatar);
         currentAddress.setText(user.getAddress());
         currentGender.setText(user.getGender());
-    }
-
-    private boolean preValidate(String address) {
-        return true;
-    }
-
-    private void setError(String errorMsg, EditText field) {
-        field.setError(errorMsg);
-        field.requestFocus();
+        spNewGender.setSelection(user.getGender().equalsIgnoreCase("nam") ? 0 : 1);
     }
 
     private void updateProfile(User user, String newAddress) {

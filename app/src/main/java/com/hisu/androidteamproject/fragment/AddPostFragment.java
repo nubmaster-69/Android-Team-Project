@@ -19,8 +19,10 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.hisu.androidteamproject.R;
@@ -38,6 +40,13 @@ public class AddPostFragment extends Fragment {
     private TextView username;
     private Button btnNewPost;
     private Uri imgUri;
+    private Post post;
+
+    public static int POST_ADD_MODE = 1;
+    public static int POST_UPDATE_MODE = 2;
+
+    private int postMode = POST_ADD_MODE;
+    ProgressDialog dia;
 
     private FirebaseFirestore fireStore;
     private StorageReference storageReference;
@@ -46,6 +55,22 @@ public class AddPostFragment extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putSerializable(USER_POST, user);
         setArguments(bundle);
+    }
+
+    public int getPostMode() {
+        return postMode;
+    }
+
+    public void setPostMode(int postMode) {
+        this.postMode = postMode;
+    }
+
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
     }
 
     @Override
@@ -60,24 +85,13 @@ public class AddPostFragment extends Fragment {
 
         initFragmentData(user);
 
-        ActivityResultLauncher resultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(), result -> {
-                    if (result.getResultCode() == getActivity().RESULT_OK) {
-                        imgUri = result.getData().getData();
-                        statusImage.setImageURI(imgUri);
-                    }
-                });
+        pickImageFromGallery();
 
-        statusImage.setOnClickListener(view -> {
-            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.setType("image/*");
-            resultLauncher.launch(intent);
-        });
-
-        btnNewPost.setOnClickListener(view -> {
-            if(!validatePost()) return;
-            addNewPost(user.getEmail());
-        });
+        if (postMode == POST_ADD_MODE) {
+            postInAddMode(user);
+        } else {
+            postInUpdateMode(post);
+        }
 
         return newPostView;
     }
@@ -85,6 +99,8 @@ public class AddPostFragment extends Fragment {
     private void initFragmentUI(View newPostView) {
         fireStore = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
+
+        dia = new ProgressDialog(getContext());
 
         userAvatar = newPostView.findViewById(R.id.new_post_user_img);
         username = newPostView.findViewById(R.id.new_post_username);
@@ -99,10 +115,80 @@ public class AddPostFragment extends Fragment {
         username.setText(user.getUsername());
     }
 
+    private void postInAddMode(User user) {
+        addActionForBtnAddNewPost(user);
+    }
+
+    private void postInUpdateMode(Post post) {
+        btnNewPost.setText("Cập Nhật");
+        edtStatus.setText(post.getStatus());
+        Glide.with(statusImage).load(post.getImageURL()).into(statusImage);
+        btnNewPost.setOnClickListener(view -> addActionForBtnUpdatePost(post));
+    }
+
+    private void addActionForBtnUpdatePost(Post updatePost) {
+        dia.setMessage("Đợi tý nhé \\(^3^)/");
+        dia.show();
+
+        updatePost.setStatus(edtStatus.getText().toString().trim());
+
+        if (imgUri != null) {
+            StorageReference imageRef = storageReference.child(String.valueOf(new Date().getTime()));
+            imageRef.putFile(imgUri).addOnSuccessListener(taskSnapshot -> taskSnapshot.getStorage()
+                    .getDownloadUrl().addOnCompleteListener(task -> {
+                        updatePost(updatePost, task.getResult().toString());
+                    }));
+        } else
+            updatePost(updatePost, updatePost.getImageURL());
+    }
+
+    private void updatePost(Post post, String imageURI) {
+
+        post.setImageURL(imageURI);
+
+        fireStore.collection("Posts").whereEqualTo("id", post.getId())
+                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot snapshots) {
+                String id = snapshots.getDocuments().get(0).getId();
+                fireStore.collection("Posts").document(id).set(post).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        dia.dismiss();
+                        confirmNewPost("Đã cập nhật khoảnh khắc!", "Yahoo! Cập nhật thành công!");
+                    }
+                });
+            }
+        });
+    }
+
+    private void pickImageFromGallery() {
+        ActivityResultLauncher resultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), result -> {
+                    if (result.getResultCode() == getActivity().RESULT_OK) {
+                        imgUri = result.getData().getData();
+                        statusImage.setImageURI(imgUri);
+                    }
+                });
+
+        statusImage.setOnClickListener(view -> {
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("image/*");
+            resultLauncher.launch(intent);
+        });
+    }
+
+    private void addActionForBtnAddNewPost(User user) {
+        btnNewPost.setOnClickListener(view -> {
+            if (!validatePost()) return;
+            addNewPost(user.getEmail());
+        });
+    }
+
     private boolean validatePost() {
         String status = edtStatus.getText().toString();
 
-        if(TextUtils.isEmpty(status) || imgUri == null) {
+        if (TextUtils.isEmpty(status) || imgUri == null) {
             showAlert("Bạn vui lòng điền đầy đủ các trường trước khi đăng nha!");
             return false;
         }
@@ -111,7 +197,6 @@ public class AddPostFragment extends Fragment {
     }
 
     private void addNewPost(String email) {
-        ProgressDialog dia = new ProgressDialog(getContext());
         dia.setMessage("Đợi tý nhé \\(^3^)/");
         dia.show();
 
@@ -129,16 +214,16 @@ public class AddPostFragment extends Fragment {
                                 fireStore.collection("Posts").add(post)
                                         .addOnSuccessListener(documentReference -> {
                                             dia.dismiss();
-                                            confirmNewPost("Yay! Cảm ơn bạn đã chia sẻ khoảnh khắc của mình!");
+                                            confirmNewPost("Đã thêm một khoảnh khắc mới!", "Yay! Cảm ơn bạn đã chia sẻ khoảnh khắc của mình!");
                                         });
                             });
                 }));
     }
 
-    private void confirmNewPost(String msg) {
+    private void confirmNewPost(String title, String msg) {
         new AlertDialog.Builder(getContext())
                 .setIcon(R.drawable.thumb_up)
-                .setTitle("Đã thêm một khoảnh khắc mới!")
+                .setTitle(title)
                 .setMessage(msg).setPositiveButton(
                 "Tiếp tục lướt!", (dialogInterface, i) -> {
                     getActivity().getSupportFragmentManager().popBackStack();

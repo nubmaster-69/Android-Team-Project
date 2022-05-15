@@ -27,6 +27,7 @@ public class User implements Serializable {
     private List<String> likedPosts;
 
     public User() {
+        likedPosts = new ArrayList<>();
     }
 
     public User(String username, String gender, String email, String address) {
@@ -34,7 +35,6 @@ public class User implements Serializable {
         this.gender = gender;
         this.email = email;
         this.address = address;
-        setDefaultAvatar();
     }
 
     public User(String username, String gender, String email, String address, List<String> likedPosts) {
@@ -50,6 +50,7 @@ public class User implements Serializable {
     }
 
     public void setLikedPosts(List<String> likedPosts) {
+        if(likedPosts == null) this.likedPosts = new ArrayList<>();
         this.likedPosts = likedPosts;
     }
 
@@ -69,7 +70,7 @@ public class User implements Serializable {
         this.avatar = avatar;
     }
 
-    private void setDefaultAvatar() {
+    public void setDefaultAvatar() {
         if (this.gender.equalsIgnoreCase("nam"))
             this.avatar = "https://firebasestorage.googleapis.com/v0/b/momentsharingdb.appspot.com/o/ic_male.png?alt=media&token=28768d9a-5632-45f6-93b4-64672f0fff87";
         else

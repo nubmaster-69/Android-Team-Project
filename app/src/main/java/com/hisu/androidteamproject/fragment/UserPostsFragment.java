@@ -43,7 +43,7 @@ public class UserPostsFragment extends Fragment {
 
         initFrmComponents(view);
 
-        postAdapter = new PostAdapter(user);
+        postAdapter = new PostAdapter(user, getActivity());
 
 
         loadPostsOfUser();

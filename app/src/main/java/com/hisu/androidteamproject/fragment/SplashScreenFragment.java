@@ -19,6 +19,8 @@ import com.hisu.androidteamproject.entity.User;
 public class SplashScreenFragment extends Fragment {
 
     private MainActivity mainActivity;
+    //2*1000 stand for 2sec cuz we're using milli seconds
+    public static final long DELAY_TIME = 2 * 1000;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,7 +50,7 @@ public class SplashScreenFragment extends Fragment {
             } else {
                 mainActivity.setFragment(new LoginFragment());
             }
-        }, 2 * 1000);
+        }, DELAY_TIME);
 
         return splashScreenView;
     }

@@ -82,7 +82,7 @@ public class NewFeedFragment extends Fragment {
     }
 
     private void initPostRecyclerView(User user) {
-        postAdapter = new PostAdapter(user);
+        postAdapter = new PostAdapter(user, getActivity());
         postRecyclerView.setAdapter(postAdapter);
         postRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 

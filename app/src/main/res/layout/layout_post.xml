@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/post_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="20dp"
+    android:layout_marginBottom="14dp"
     android:background="@color/white"
     app:cardBackgroundColor="#F5EBEB"
     app:cardCornerRadius="10dp">
@@ -22,8 +21,8 @@
             android:layout_height="50dp"
             android:layout_marginTop="8dp"
             android:src="@drawable/ic_female"
-            app:civ_border_width="1dp"
             app:civ_border_color="#073b4c"
+            app:civ_border_width="1dp"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -47,9 +46,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:textColor="@color/black"
             android:fontFamily="@font/be_vietnam"
-
+            android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="@+id/post_user_img"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"
             app:layout_constraintHorizontal_bias="0.0"
@@ -61,11 +59,11 @@
             android:id="@+id/post_img"
             android:layout_width="0dp"
             android:layout_height="240dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/user_address"/>
+            app:layout_constraintTop_toBottomOf="@+id/post_status" />
 
         <ImageView
             android:id="@+id/img_favorite"
@@ -105,7 +103,7 @@
             android:id="@+id/post_status"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="12dp"
             android:ellipsize="end"
             android:fontFamily="@font/be_vietnam"
             android:maxLines="2"
@@ -113,7 +111,7 @@
             android:textSize="18dp"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toBottomOf="@+id/post_react" />
+            app:layout_constraintTop_toBottomOf="@+id/user_address" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline3"

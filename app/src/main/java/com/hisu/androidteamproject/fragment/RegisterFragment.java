@@ -41,6 +41,7 @@ import com.hisu.androidteamproject.R;
 import com.hisu.androidteamproject.entity.Post;
 import com.hisu.androidteamproject.entity.User;
 
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -147,24 +148,25 @@ public class RegisterFragment extends Fragment {
             firebaseAuth.fetchSignInMethodsForEmail(email).addOnSuccessListener(result -> {
                 if (!result.getSignInMethods().isEmpty()) {
                     dia.dismiss();
-                    showAlert("Email này đã được dùng để đăng ký tài khoản trước đó!" +
+                    showAlert("Cảnh Báo!","Email này đã được dùng để đăng ký tài khoản trước đó!" +
                             " Vui lòng kiểm tra lại!");
                     edtEmail.requestFocus();
                 } else {
                     firebaseAuth.createUserWithEmailAndPassword(email, password)
                             .addOnSuccessListener(authResult -> {
-                                User user = new User(username, gender, email, address);
+                                User user = new User(username, gender, email, address, new ArrayList<>());
+                                user.setDefaultAvatar();
                                 fireStore.collection("Users").add(user)
                                         .addOnSuccessListener(documentReference -> {
                                             dia.dismiss();
-                                            showAlert("Đăng ký thành công!");
+                                            showAlert("Congrats!","Đăng ký thành công!");
                                             clearAllText();
                                         })
-                                        .addOnFailureListener(e -> showAlert(e.getMessage()));
+                                        .addOnFailureListener(e -> showAlert("Something went wrong",e.getMessage()));
                             })
                             .addOnFailureListener(e -> {
                                 dia.dismiss();
-                                showAlert(e.getMessage());
+                                showAlert("Something went wrong", e.getMessage());
                             });
                 }
             });
@@ -210,11 +212,12 @@ public class RegisterFragment extends Fragment {
         field.requestFocus();
     }
 
-    private void showAlert(String msg) {
+    private void showAlert(String title, String msg) {
         new AlertDialog.Builder(getContext())
                 .setIcon(R.drawable.ic_alert)
-                .setTitle("Something went wrong!")
-                .setMessage(msg).setPositiveButton("OK", null)
+                .setTitle(title)
+                .setMessage(msg).setPositiveButton("OK",
+                (dialogInterface, i) -> switchToLoginScreen())
                 .show();
     }
 

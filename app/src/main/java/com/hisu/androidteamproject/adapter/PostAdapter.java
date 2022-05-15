@@ -1,7 +1,7 @@
 package com.hisu.androidteamproject.adapter;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +19,14 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.hisu.androidteamproject.MainActivity;
 import com.hisu.androidteamproject.R;
 import com.hisu.androidteamproject.entity.Post;
 import com.hisu.androidteamproject.entity.User;
+import com.hisu.androidteamproject.fragment.AddPostFragment;
+import com.hisu.androidteamproject.fragment.RegisterFragment;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
@@ -35,13 +39,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public static final int VIEW_ON_NEWFEED = 0;
     public static final int VIEW_ON_PROFILE = 1;
     private int viewMode;
+    private MainActivity mainActivity;
+    private Context context;
 
-    public PostAdapter(User user) {
+    public PostAdapter(User user, Context context) {
         this.user = user;
+        this.context = context;
+        mainActivity = (MainActivity) context;
         fireStore = FirebaseFirestore.getInstance();
     }
 
-    public void setViewMode(int viewMode){
+    public void setViewMode(int viewMode) {
         this.viewMode = viewMode;
     }
 
@@ -91,16 +99,26 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         holder.postFavorite.setOnClickListener(view -> {
             holder.toggleReactToPost(post, currentUserID);
+            notifyItemChanged(position);
         });
 
         //Default is invisible
-        if (viewMode == VIEW_ON_PROFILE){
+        if (viewMode == VIEW_ON_PROFILE) {
             holder.btnEditPost.setVisibility(View.VISIBLE);
 
             holder.btnEditPost.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
+                    AddPostFragment postFragment = new AddPostFragment(user);
+                    postFragment.setPost(post);
+                    postFragment.setPostMode(AddPostFragment.POST_UPDATE_MODE);
+
+                    mainActivity.getSupportFragmentManager()
+                            .beginTransaction()
+                            .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left)
+                            .replace(mainActivity.getFrmContainer().getId(), postFragment)
+                            .commit();
                 }
             });
 
@@ -110,16 +128,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         }
     }
 
-    private void addActionForBtnDeletePost(ImageButton btnDeletePost, Post post, int index){
+    private void addActionForBtnDeletePost(ImageButton btnDeletePost, Post post, int index) {
         btnDeletePost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new AlertDialog.Builder(view.getContext())
+                new AlertDialog.Builder(context)
                         .setTitle("Cảnh báo")
-                        .setMessage("Bạn chắc chắn muốn xoá bài đăng này????")
-                        .setPositiveButton("Xoá", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
+                        .setMessage("Bạn chắc chắn muốn xoá bài đăng này?!")
+                        .setPositiveButton("Xoá", (dialogInterface, i) ->
                                 fireStore.collection("Posts")
                                         .whereEqualTo("id", post.getId()).get()
                                         .addOnSuccessListener(snaps -> {
@@ -132,14 +148,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                                                         notifyItemRemoved(index);
                                                     });
 
-                                            Toast.makeText(view.getContext(), "Đã xoá bài đăng", Toast.LENGTH_SHORT).show();
-                                        });
-                            }
-                        })
+                                            Toast.makeText(context,
+                                                    "Đã xoá bài đăng!", Toast.LENGTH_SHORT
+                                            ).show();
+                                        }))
                         .setNegativeButton("Huỷ", null)
                         .show();
-
-
             }
         });
     }
