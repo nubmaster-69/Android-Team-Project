@@ -79,14 +79,12 @@ public class EditProfileFragment extends Fragment {
 
         btnUpdate.setOnClickListener(view -> {
             String newAddress = edtNewAddress.getText().toString().trim();
-            String newEmail = edtNewEmail.getText().toString().trim();
 
-            if (preValidate(newEmail, newAddress)) {
+            if (preValidate(newAddress)) {
 
                 newAddress = TextUtils.isEmpty(newAddress) ? user.getAddress() : newAddress;
-                newEmail = TextUtils.isEmpty(newEmail) ? user.getEmail() : newEmail;
 
-                updateProfile(user, newAddress, newEmail);
+                updateProfile(user, newAddress);
             }
         });
 
@@ -96,11 +94,9 @@ public class EditProfileFragment extends Fragment {
     private void initFragmentUI(View editProfileView) {
         newAvatar = editProfileView.findViewById(R.id.user_edit_profile_img);
         edtNewAddress = editProfileView.findViewById(R.id.user_edit_profile_address);
-        edtNewEmail = editProfileView.findViewById(R.id.user_edit_profile_email);
         spNewGender = editProfileView.findViewById(R.id.user_edit_profile_gender);
         btnUpdate = editProfileView.findViewById(R.id.btn_update_profile);
         currentAddress = editProfileView.findViewById(R.id.txt_current_address);
-        currentEmail = editProfileView.findViewById(R.id.txt_current_email);
         currentGender = editProfileView.findViewById(R.id.txt_current_gender);
 
         dia = new ProgressDialog(getContext());
@@ -112,13 +108,10 @@ public class EditProfileFragment extends Fragment {
     private void setFragmentData(User user) {
         Glide.with(newAvatar).load(user.getAvatar()).into(newAvatar);
         currentAddress.setText(user.getAddress());
-        currentEmail.setText(user.getEmail());
         currentGender.setText(user.getGender());
     }
 
-    private boolean preValidate(String email, String address) {
-
-
+    private boolean preValidate(String address) {
         return true;
     }
 
@@ -127,13 +120,12 @@ public class EditProfileFragment extends Fragment {
         field.requestFocus();
     }
 
-    private void updateProfile(User user, String newAddress, String newEmail) {
+    private void updateProfile(User user, String newAddress) {
 
         dia.setMessage("Đợi tý nhé \\(^3^)/");
         dia.show();
 
         user.setAddress(newAddress);
-        user.setEmail(newEmail);
         user.setGender(spNewGender.getSelectedItem().toString());
 
         if (newAvatarUri != null) {
