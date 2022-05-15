@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -15,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.hisu.androidteamproject.MainActivity;
@@ -42,12 +41,6 @@ public class NewFeedFragment extends Fragment {
     private MainActivity containerActivity;
 
     private DBInit dbInit;
-
-    /**
-     * Testing
-     * @param user
-     */
-    private Button btnTestConnection;
 
     public NewFeedFragment(User user) {
         Bundle bundle = new Bundle();
@@ -78,16 +71,6 @@ public class NewFeedFragment extends Fragment {
         imgUserAvatar = newFeedsView.findViewById(R.id.user_profile_avatar);
         logoImage = newFeedsView.findViewById(R.id.img_logo);
         containerActivity = (MainActivity) getActivity();
-        /**
-         * Testing
-         */
-        btnTestConnection = newFeedsView.findViewById(R.id.btnTestConnection);
-        btnTestConnection.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                loadNewFeed(postAdapter);
-            }
-        });
 
         initLocalDB();
     }
@@ -119,62 +102,63 @@ public class NewFeedFragment extends Fragment {
                 .commit();
     }
 
-    private void loadNewFeed(PostAdapter postAdapter){
-        fireStore.collection("Posts").get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    List<Post> postList = new ArrayList<>();
+    private void loadNewFeed(PostAdapter postAdapter) {
+        if (isConnectionAvailable()) {
 
-                    if (isConnectionAvailable()){
+            dbInit.postDao().clearTable();
+
+            fireStore.collection("Posts").get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+
+                        List<Post> postList = new ArrayList<>();
+
                         for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
                             Post post = snapshot.toObject(Post.class);
 
-                            //Only load Posts which posted two days from now
-                            if(filterPostDate(post.getPostDate().toInstant())){
+                            if (filterPostDate(post.getPostDate().toInstant())) {
                                 postList.add(post);
-
                                 dbInit.postDao().insertPost(post);
                             }
                         }
 
                         postAdapter.setPostList(postList);
+                        postRecyclerView.scrollToPosition(0);
+                    });
+
+            fireStore.collection("Posts").addSnapshotListener((value, error) -> {
+                for (DocumentChange documentChange : value.getDocumentChanges()) {
+                    if (documentChange.getType() == DocumentChange.Type.MODIFIED) {
+
+                        List<Post> postList = postAdapter.getPostList();
+                        Post post = documentChange.getDocument().toObject(Post.class);
+
+                        for (int i = 0; i < postList.size(); i++)
+                            if (postList.get(i).getId().equalsIgnoreCase(post.getId())) {
+                                postList.set(i, post);
+                                postAdapter.notifyItemChanged(i);
+                            }
                     }
-                    else{
-                        postList.addAll(dbInit.postDao().getAllPost());
-
-                        Toast.makeText(getContext(), "Không có kết nối mạng. Vui lòng kiểm tra lại!", Toast.LENGTH_SHORT).show();
-
-                        postAdapter.setPostList(postList);
-                    }
-                });
-
-        fireStore.collection("Posts").addSnapshotListener((value, error) -> {
-            List<Post> postList = new ArrayList<>();
-
-            for (DocumentSnapshot document : value.getDocuments()) {
-                Post post = document.toObject(Post.class);
-                if(filterPostDate(post.getPostDate().toInstant()))
-                    postList.add(post);
-            }
-
-            postAdapter.setPostList(postList);
-        });
-
-        System.out.println(dbInit.postDao().getAllPost().size() + "RRRRRRRRR");
+                }
+            });
+        } else {
+            Toast.makeText(getContext(),
+                    "Không có kết nối mạng! Vui lòng kiểm tra lại!", Toast.LENGTH_LONG).show();
+            postAdapter.setPostList(dbInit.postDao().getAllPost());
+        }
     }
 
-    private void initLocalDB(){
+    private void initLocalDB() {
         dbInit = DBInit.getInstance(getContext());
     }
 
-
-    private boolean isConnectionAvailable(){
+    private boolean isConnectionAvailable() {
         boolean isConnected = true;
 
         ConnectivityManager connectivityManager = getContext().getSystemService(ConnectivityManager.class);
 
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
-        if (networkInfo == null){
+        if (networkInfo == null) {
             isConnected = false;
         }
 

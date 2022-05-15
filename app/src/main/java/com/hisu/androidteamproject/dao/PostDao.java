@@ -19,5 +19,5 @@ public interface PostDao {
     void insertPost(Post... post);
 
     @Query("DELETE FROM posts")
-    void deleteAllDatableOfPostsTable();
+    void clearTable();
 }

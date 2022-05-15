@@ -54,11 +54,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
         if (getSupportFragmentManager().getBackStackEntryCount() == 1 )
             this.finish();
         else
             getSupportFragmentManager().popBackStack();
-
     }
 }
