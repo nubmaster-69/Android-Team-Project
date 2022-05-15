@@ -47,6 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:textColor="@color/black"
             android:fontFamily="@font/be_vietnam"
 
             app:layout_constraintBottom_toBottomOf="@+id/post_user_img"
@@ -122,23 +123,25 @@
             app:layout_constraintGuide_end="8dp" />
 
         <ImageButton
-            android:id="@+id/imageButton8"
+            android:id="@+id/btnEditPost"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
             android:background="#FFFFFF"
-            app:layout_constraintEnd_toStartOf="@+id/imageButton10"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toStartOf="@+id/btnDeletePost"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/p_ic_edit_user_post" />
 
         <ImageButton
-            android:id="@+id/imageButton10"
+            android:id="@+id/btnDeletePost"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:background="#FFFFFF"
+            android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/p_ic_trash2" />

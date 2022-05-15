@@ -1,10 +1,14 @@
 package com.hisu.androidteamproject.adapter;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,9 +32,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     private final FirebaseFirestore fireStore;
     private String currentUserID = "";
 
+    public static final int VIEW_ON_NEWFEED = 0;
+    public static final int VIEW_ON_PROFILE = 1;
+    private int viewMode;
+
     public PostAdapter(User user) {
         this.user = user;
         fireStore = FirebaseFirestore.getInstance();
+    }
+
+    public void setViewMode(int viewMode){
+        this.viewMode = viewMode;
     }
 
     public void setPostList(List<Post> postList) {
@@ -80,6 +92,56 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.postFavorite.setOnClickListener(view -> {
             holder.toggleReactToPost(post, currentUserID);
         });
+
+        //Default is invisible
+        if (viewMode == VIEW_ON_PROFILE){
+            holder.btnEditPost.setVisibility(View.VISIBLE);
+
+            holder.btnEditPost.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
+
+            holder.btnDeletePost.setVisibility(View.VISIBLE);
+
+            addActionForBtnDeletePost(holder.btnDeletePost, post, position);
+        }
+    }
+
+    private void addActionForBtnDeletePost(ImageButton btnDeletePost, Post post, int index){
+        btnDeletePost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(view.getContext())
+                        .setTitle("Cảnh báo")
+                        .setMessage("Bạn chắc chắn muốn xoá bài đăng này????")
+                        .setPositiveButton("Xoá", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                fireStore.collection("Posts")
+                                        .whereEqualTo("id", post.getId()).get()
+                                        .addOnSuccessListener(snaps -> {
+                                            String postId = snaps.getDocuments().get(0).getId();
+
+                                            fireStore.collection("Posts")
+                                                    .document(postId).delete()
+                                                    .addOnSuccessListener(result -> {
+                                                        postList.remove(index);
+                                                        notifyItemRemoved(index);
+                                                    });
+
+                                            Toast.makeText(view.getContext(), "Đã xoá bài đăng", Toast.LENGTH_SHORT).show();
+                                        });
+                            }
+                        })
+                        .setNegativeButton("Huỷ", null)
+                        .show();
+
+
+            }
+        });
     }
 
     @Override
@@ -91,6 +153,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         private final TextView txtPostReact, txtPostStatus, txtUserName, txtUserAddress;
         private final ImageView postImage, postFavorite, postUserImage;
+        private ImageButton btnDeletePost, btnEditPost;
         private boolean isFavorite = false;
 
         private final FirebaseFirestore fireStore = FirebaseFirestore.getInstance();
@@ -106,6 +169,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             postImage = itemView.findViewById(R.id.post_img);
             postFavorite = itemView.findViewById(R.id.img_favorite);
             postUserImage = itemView.findViewById(R.id.post_user_img);
+            btnDeletePost = itemView.findViewById(R.id.btnDeletePost);
+            btnEditPost = itemView.findViewById(R.id.btnEditPost);
         }
 
         private void setPostData(Post post, User user) {

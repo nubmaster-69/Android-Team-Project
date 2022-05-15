@@ -122,6 +122,7 @@ public class NewFeedFragment extends Fragment {
                         }
 
                         postAdapter.setPostList(postList);
+                        postAdapter.setViewMode(PostAdapter.VIEW_ON_NEWFEED);
                         postRecyclerView.scrollToPosition(0);
                     });
 

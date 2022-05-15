@@ -109,6 +109,11 @@ public class ProfileFragment extends Fragment {
 
         btnEditProfile.setOnClickListener(view -> switchToEditProfileScreen(user));
         btnNewPost.setOnClickListener(view -> switchToAddPostScreen(user));
+
+        getChildFragmentManager()
+                .beginTransaction()
+                .replace(viewContainer.getId(), new UserPostsFragment(user))
+                .commit();
     }
 
     private void addActionForChangeAvatarButton(User user) {
