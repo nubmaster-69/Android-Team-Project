@@ -212,7 +212,19 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             Duration duration = Duration.between(date.toInstant(), new Date().toInstant());
             long days = Math.abs(duration.toDays());
             long hours = Math.abs(duration.toHours());
-            return (days >= 1) ? days + " ngày trước." : hours + " giờ trước.";
+            long min = Math.abs(duration.toMinutes());
+
+            String time = "";
+            if (days >= 1)
+                time = days + " ngày trước.";
+            else if (min < 4)
+                time = " Vừa xong.";
+            else if (min < 60)
+                time = min + " phút trước.";
+            else
+                time = hours + " giờ trước.";
+
+            return time;
         }
 
         private void toggleReactToPost(Post post, String userID) {
