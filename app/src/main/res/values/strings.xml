@@ -4,6 +4,16 @@
         <item>Nam</item>
         <item>Nữ</item>
     </string-array>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="login">Đăng Nhập</string>
+    <string name="register">Đăng Ký</string>
+    <string name="email">Email</string>
+    <string name="password">Mật khẩu</string>
+    <string name="forgot_pwd">Quên mật khẩu?</string>
+    <string name="no_account">Chưa có tài khoản?</string>
+    <string name="regis_now">Đăng ký ngay!</string>
+    <string name="have_account">Đã có tài khoản?</string>
+    <string name="login_now">Đăng nhập ngay!</string>
+    <string name="user_name">Tên người dùng</string>
+    <string name="address">Nơi sinh sống</string>
 </resources>

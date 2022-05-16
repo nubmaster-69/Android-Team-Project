@@ -2,6 +2,7 @@ package com.hisu.androidteamproject.adapter;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +25,14 @@ import com.hisu.androidteamproject.R;
 import com.hisu.androidteamproject.entity.Post;
 import com.hisu.androidteamproject.entity.User;
 import com.hisu.androidteamproject.fragment.AddPostFragment;
-import com.hisu.androidteamproject.fragment.RegisterFragment;
 
-import java.time.format.DateTimeFormatter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
 
@@ -167,7 +172,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         private final TextView txtPostReact, txtPostStatus, txtUserName, txtUserAddress;
         private final ImageView postImage, postFavorite, postUserImage;
-        private ImageButton btnDeletePost, btnEditPost;
+        private final ImageButton btnDeletePost, btnEditPost;
         private boolean isFavorite = false;
 
         private final FirebaseFirestore fireStore = FirebaseFirestore.getInstance();
@@ -197,7 +202,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             txtPostStatus.setText(post.getStatus());
             txtPostReact.setText(String.valueOf(post.getPostReact()));
             txtUserName.setText(user.getUsername());
-            txtUserAddress.setText(user.getAddress());
+
+            txtUserAddress.setText(String.format("%s - %s",
+                    user.getAddress(), getDateFormat(post.getPostDate()))
+            );
+        }
+
+        private String getDateFormat(Date date) {
+            Duration duration = Duration.between(date.toInstant(), new Date().toInstant());
+            long days = Math.abs(duration.toDays());
+            long hours = Math.abs(duration.toHours());
+            return (days >= 1) ? days + " ngày trước." : hours + " giờ trước.";
         }
 
         private void toggleReactToPost(Post post, String userID) {

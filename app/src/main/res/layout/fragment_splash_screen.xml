@@ -37,7 +37,7 @@
         android:layout_marginStart="6dp"
         android:fontFamily="@font/be_vietnam_bold"
         android:text="Sharing"
-        android:textColor="@color/secondatryColor"
+        android:textColor="@color/secondaryColor"
         android:textSize="30dp"
         app:layout_constraintBottom_toBottomOf="@+id/textView4"
         app:layout_constraintEnd_toEndOf="@+id/circleImageView"

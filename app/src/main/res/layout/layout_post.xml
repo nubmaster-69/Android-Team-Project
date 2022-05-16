@@ -7,7 +7,8 @@
     android:layout_marginBottom="14dp"
     android:background="@color/white"
     app:cardBackgroundColor="#F5EBEB"
-    app:cardCornerRadius="10dp">
+    app:cardCornerRadius="10dp"
+    app:cardPreventCornerOverlap="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -57,7 +58,7 @@
 
         <ImageView
             android:id="@+id/post_img"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="240dp"
             android:layout_marginTop="4dp"
             android:scaleType="centerCrop"
