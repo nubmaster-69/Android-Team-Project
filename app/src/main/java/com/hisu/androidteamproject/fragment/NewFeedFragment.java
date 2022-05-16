@@ -27,6 +27,8 @@ import com.hisu.androidteamproject.entity.User;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class NewFeedFragment extends Fragment {
@@ -117,9 +119,17 @@ public class NewFeedFragment extends Fragment {
 
                             if (filterPostDate(post.getPostDate().toInstant())) {
                                 postList.add(post);
-                                dbInit.postDao().insertPost(post);
+
+                                new Thread(() -> dbInit.postDao().insertPost(post)).start();
                             }
                         }
+
+                        Collections.sort(postList, new Comparator<Post>() {
+                            @Override
+                            public int compare(Post post, Post t1) {
+                                return t1.getPostDate().compareTo(post.getPostDate());
+                            }
+                        });
 
                         postAdapter.setPostList(postList);
                         postAdapter.setViewMode(PostAdapter.VIEW_ON_NEWFEED);

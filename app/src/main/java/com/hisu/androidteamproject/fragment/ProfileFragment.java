@@ -122,6 +122,7 @@ public class ProfileFragment extends Fragment {
                     if (result.getResultCode() == getActivity().RESULT_OK) {
                         newAvatarUri = result.getData().getData();
                         new AlertDialog.Builder(getContext())
+                                .setIcon(R.drawable.ic_alert)
                                 .setTitle("Cập nhật ảnh đại diện")
                                 .setMessage("Bạn có chắc muốn thay đổi ảnh đại diện chứ?!")
                                 .setPositiveButton("OK", (dialogInterface, i) -> updateProfile(user))
@@ -140,8 +141,9 @@ public class ProfileFragment extends Fragment {
     private void addActionForButtonLogOut() {
         btnLogout.setOnClickListener(view -> {
             new AlertDialog.Builder(getContext())
+                    .setIcon(R.drawable.ic_alert)
                     .setTitle("Đăng xuất")
-                    .setMessage("Bạn có thực sự muốn thoát không?!")
+                    .setMessage("Bạn có thực sự muốn đăng xuất không?!")
                     .setPositiveButton("OK", (dialogInterface, i) -> mainActivity.logOut())
                     .setNegativeButton("Huỷ", null)
                     .show();
