@@ -18,6 +18,8 @@ import com.hisu.androidteamproject.entity.Post;
 import com.hisu.androidteamproject.entity.User;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -76,6 +78,13 @@ public class UserPostsFragment extends Fragment {
                                             snapshot.toObject(Post.class)
                                     );
                                 }
+
+                                Collections.sort(posts, new Comparator<Post>() {
+                                    @Override
+                                    public int compare(Post post, Post t1) {
+                                        return t1.getPostDate().compareTo(post.getPostDate());
+                                    }
+                                });
 
                                 postAdapter.setViewMode(PostAdapter.VIEW_ON_PROFILE);
                                 postAdapter.setPostList(posts);
