@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -40,6 +41,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     private List<Post> postList;
     private final User user;
     private final FirebaseFirestore fireStore;
+    private final FirebaseAuth firebaseAuth;
     private String currentUserID = "";
 
     public static final int VIEW_ON_NEWFEED = 0;
@@ -58,6 +60,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         this.context = context;
         mainActivity = (MainActivity) context;
         fireStore = FirebaseFirestore.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
     }
 
     public void setViewMode(int viewMode) {
@@ -163,15 +166,32 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
                             fireStore.collection("Users")
                                     .document(userId).get()
-                                    .addOnSuccessListener(snapshot -> {
-                                        User user = snapshot.toObject(User.class);
+                                    .addOnSuccessListener(sn -> {
+                                        User clickedUser = sn.toObject(User.class);
 
-                                        mainActivity.getSupportFragmentManager()
-                                                .beginTransaction()
-                                                .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left)
-                                                .replace(mainActivity.getFrmContainer().getId(), new ProfileFragment(user, ProfileFragment.VIEW_OTHERS_PROFILE))
-                                                .addToBackStack("user_profile")
-                                                .commit();
+                                        if (user.getEmail().equals(clickedUser.getEmail())){
+
+                                            mainActivity.getSupportFragmentManager()
+                                                    .beginTransaction()
+                                                    .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left)
+                                                    .replace(mainActivity.getFrmContainer().getId(), new ProfileFragment(user, ProfileFragment.VIEW_MY_PROFILE))
+                                                    .addToBackStack("user_profile")
+                                                    .commit();
+                                        }
+                                        else{
+                                            fireStore.collection("Users")
+                                                    .document(userId).get()
+                                                    .addOnSuccessListener(snapshot -> {
+                                                        User currentUser = snapshot.toObject(User.class);
+
+                                                        mainActivity.getSupportFragmentManager()
+                                                                .beginTransaction()
+                                                                .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left)
+                                                                .replace(mainActivity.getFrmContainer().getId(), new ProfileFragment(currentUser, ProfileFragment.VIEW_OTHERS_PROFILE))
+                                                                .addToBackStack("user_profile")
+                                                                .commit();
+                                                    });
+                                        }
                                     });
                         });
             }
