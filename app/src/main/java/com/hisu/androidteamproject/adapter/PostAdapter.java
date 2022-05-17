@@ -135,6 +135,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                             .beginTransaction()
                             .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left)
                             .replace(mainActivity.getFrmContainer().getId(), postFragment)
+                            .addToBackStack("user_profile_edit")
                             .commit();
                 }
             });
