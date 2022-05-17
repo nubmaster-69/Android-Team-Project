@@ -31,9 +31,11 @@ public class UserPostsFragment extends Fragment {
     private PostAdapter postAdapter;
     private RecyclerView recyclerView;
     private FirebaseFirestore firestore;
+    private int viewProfileMode;
 
-    public UserPostsFragment(User user) {
+    public UserPostsFragment(User user, int viewProfileMode) {
         this.user = user;
+        this.viewProfileMode = viewProfileMode;
     }
 
     @Override
@@ -87,6 +89,13 @@ public class UserPostsFragment extends Fragment {
                                 });
 
                                 postAdapter.setViewMode(PostAdapter.VIEW_ON_PROFILE);
+
+                                if (viewProfileMode == PostAdapter.VIEW_OTHERS_PROFILE){
+                                    postAdapter.setViewProfileMode(PostAdapter.VIEW_OTHERS_PROFILE);
+                                }
+                                else if (viewProfileMode == PostAdapter.VIEW_MY_PROFILE){
+                                    postAdapter.setViewProfileMode(PostAdapter.VIEW_MY_PROFILE);
+                                }
                                 postAdapter.setPostList(posts);
                             });
                 });
