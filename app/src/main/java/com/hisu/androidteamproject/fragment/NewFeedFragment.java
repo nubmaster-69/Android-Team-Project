@@ -99,7 +99,7 @@ public class NewFeedFragment extends Fragment {
         containerActivity.getSupportFragmentManager()
                 .beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left)
-                .replace(containerActivity.getFrmContainer().getId(), new ProfileFragment(user))
+                .replace(containerActivity.getFrmContainer().getId(), new ProfileFragment(user, ProfileFragment.VIEW_MY_PROFILE))
                 .addToBackStack("user_profile")
                 .commit();
     }

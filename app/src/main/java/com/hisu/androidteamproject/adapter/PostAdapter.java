@@ -25,6 +25,7 @@ import com.hisu.androidteamproject.R;
 import com.hisu.androidteamproject.entity.Post;
 import com.hisu.androidteamproject.entity.User;
 import com.hisu.androidteamproject.fragment.AddPostFragment;
+import com.hisu.androidteamproject.fragment.ProfileFragment;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -44,6 +45,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public static final int VIEW_ON_NEWFEED = 0;
     public static final int VIEW_ON_PROFILE = 1;
     private int viewMode;
+
+    public static final int VIEW_MY_PROFILE = 0;
+    public static final int VIEW_OTHERS_PROFILE = 1;
+    private int viewProfileMode;
+
     private MainActivity mainActivity;
     private Context context;
 
@@ -56,6 +62,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     public void setViewMode(int viewMode) {
         this.viewMode = viewMode;
+    }
+
+    public void setViewProfileMode(int viewProfileMode) {
+        this.viewProfileMode = viewProfileMode;
     }
 
     public void setPostList(List<Post> postList) {
@@ -107,6 +117,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             notifyItemChanged(position);
         });
 
+        addActionForAvatarImageInNewFeed(holder.postUserImage, post);
+
         //Default is invisible
         if (viewMode == VIEW_ON_PROFILE) {
             holder.btnEditPost.setVisibility(View.VISIBLE);
@@ -131,6 +143,38 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
             addActionForBtnDeletePost(holder.btnDeletePost, post, position);
         }
+
+        if (viewProfileMode == VIEW_OTHERS_PROFILE){
+            holder.btnEditPost.setVisibility(View.INVISIBLE);
+            holder.btnDeletePost.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void addActionForAvatarImageInNewFeed(ImageView avatar, Post post){
+        avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                fireStore.collection("Posts")
+                        .whereEqualTo("id", post.getId()).get()
+                        .addOnSuccessListener(snaps -> {
+                            String userId = snaps.getDocuments().get(0).get("userID").toString();
+
+                            fireStore.collection("Users")
+                                    .document(userId).get()
+                                    .addOnSuccessListener(snapshot -> {
+                                        User user = snapshot.toObject(User.class);
+
+                                        mainActivity.getSupportFragmentManager()
+                                                .beginTransaction()
+                                                .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left)
+                                                .replace(mainActivity.getFrmContainer().getId(), new ProfileFragment(user, ProfileFragment.VIEW_OTHERS_PROFILE))
+                                                .addToBackStack("user_profile")
+                                                .commit();
+                                    });
+                        });
+            }
+        });
     }
 
     private void addActionForBtnDeletePost(ImageButton btnDeletePost, Post post, int index) {
@@ -252,5 +296,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                                     });
                     });
         }
+
+        private void viewOthersProfile(Post post){
+
+        }
+
     }
 }

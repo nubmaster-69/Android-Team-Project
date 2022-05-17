@@ -2,6 +2,7 @@ package com.hisu.androidteamproject.fragment;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,6 +28,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.hisu.androidteamproject.MainActivity;
 import com.hisu.androidteamproject.R;
+import com.hisu.androidteamproject.adapter.PostAdapter;
 import com.hisu.androidteamproject.entity.User;
 
 import java.util.Date;
@@ -39,14 +42,25 @@ public class ProfileFragment extends Fragment {
     private Uri newAvatarUri;
     private MainActivity mainActivity;
     private FrameLayout viewContainer;
+    private ConstraintLayout constraintLayout;
 
     private FirebaseFirestore fireStore;
     private StorageReference storage;
 
-    public ProfileFragment(User user) {
+    public static final int VIEW_MY_PROFILE = 0;
+    public static final int VIEW_OTHERS_PROFILE = 1;
+    private int viewProfileMode;
+
+    public ProfileFragment(User user, int viewProfileMode) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(AddPostFragment.USER_POST, user);
         setArguments(bundle);
+
+        this.viewProfileMode = viewProfileMode;
+    }
+
+    public void setViewProfileMode(int viewProfileMode) {
+        this.viewProfileMode = viewProfileMode;
     }
 
     @Override
@@ -91,8 +105,18 @@ public class ProfileFragment extends Fragment {
 
         viewContainer = profileView.findViewById(R.id.frlUserPostsContainer);
 
+        constraintLayout = profileView.findViewById(R.id.constraintLayout4);
+
         fireStore = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance().getReference();
+
+        if (viewProfileMode == VIEW_OTHERS_PROFILE){
+            btnEditAva.setVisibility(View.INVISIBLE);
+            btnLogout.setVisibility(View.INVISIBLE);
+            btnEditProfile.setVisibility(View.INVISIBLE);
+            btnNewPost.setVisibility(View.INVISIBLE);
+            constraintLayout.setVisibility(View.GONE);
+        }
     }
 
     private void initFragmentData(User user) {
@@ -110,10 +134,20 @@ public class ProfileFragment extends Fragment {
         btnEditProfile.setOnClickListener(view -> switchToEditProfileScreen(user));
         btnNewPost.setOnClickListener(view -> switchToAddPostScreen(user));
 
-        getChildFragmentManager()
-                .beginTransaction()
-                .replace(viewContainer.getId(), new UserPostsFragment(user))
-                .commit();
+        if (viewProfileMode == PostAdapter.VIEW_MY_PROFILE){
+            getChildFragmentManager()
+                    .beginTransaction()
+                    .replace(viewContainer.getId(), new UserPostsFragment(user, VIEW_MY_PROFILE))
+                    .commit();
+        }
+        else if (viewProfileMode == PostAdapter.VIEW_OTHERS_PROFILE){
+            getChildFragmentManager()
+                    .beginTransaction()
+                    .replace(viewContainer.getId(), new UserPostsFragment(user, VIEW_OTHERS_PROFILE))
+                    .commit();
+        }
+
+
     }
 
     private void addActionForChangeAvatarButton(User user) {
